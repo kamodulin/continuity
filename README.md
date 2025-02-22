@@ -41,9 +41,9 @@ int main() {
 
     // Accept connections on the socket.
     while ( !upgrader.has_completed() ) {
-        int client = accept(sock, ...);
-        if (client < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+        int client = accept( sock, ...);
+        if ( client < 0 ) {
+            if ( errno == EAGAIN || errno == EWOULDBLOCK ) {
                 continue;
             }
             // Handle error.
