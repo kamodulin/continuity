@@ -64,6 +64,8 @@ int main() {
 
 ### References
 
+The following resources were used to guide the design and implementation of this library. They provide a good overview of the challenges and solutions to implementing zero-downtime restarts for network services.
+
 - https://blog.cloudflare.com/oxy-the-journey-of-graceful-restarts/
 - https://blog.cloudflare.com/graceful-upgrades-in-go
 - https://blog.cloudflare.com/pingora-open-source/
