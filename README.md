@@ -1,18 +1,19 @@
 # Continuity
 
-Graceful process restarts for C++ applications.
+Graceful process restarts for network applications.
 
 ## Overview
 
-Inspired by `tableflip` and `shellflip`, this library aims to provide a simple way to restart C++ network services without dropping existing connections. This is useful for applications that do not reside behind a load balancer or reverse proxy and cannot afford to drop connections during the restart process.
+Inspired by `tableflip` and `shellflip`, `continuity` aims to provide a simple way to restart network services without dropping existing connections. This is useful for applications that do not reside behind a load balancer or reverse proxy and cannot afford to drop connections during the restart process.
 
 ## Features
 
-- [ ] No connections are dropped during an upgrade. After a restart, new connections are only accepted by the new process.
-- [ ] Simply run the binary again to restart the process. No need to send signals or use a separate command (could be supported in the future).
-- [ ] Check if restart was successful by sending some kind of signal to the old process.
-- [ ] Only allow one upgrade at a time.
+- No connections are dropped during an upgrade. After a restart, new connections are only accepted by the new process.
+- No modifications to application code are required. 
+- Language-agnostic and works with static and dynamically linked binaries.
+- Simply run the binary again to restart the process. No need to send signals or use a separate command (could be supported in the future).
 
+<!-- 
 ## Design
 
 The initial process listens on a UNIX domain socket. When a new connection is established, it sends all registered socket file descriptors to the new process over the socket using `sendmsg` with ancillary data of type `SCM_RIGHTS`. The new process receives the file descriptors using `recvmsg` and stores them as a map of socket addresses to file descriptors. Then, as the new process starts, it checks if there are any matching sockets in the received file descriptors. If a match is found, the new process uses the existing socket file descriptor to accept new connections.
@@ -52,7 +53,7 @@ int main() {
     }
 }
 
-```
+``` -->
 
 <!-- There are a variety of examples in the `examples` directory that demonstrate how to use the library in different scenarios. For example, we can directly integrate the upgrader into existing code, or wrap `bind` and `accept` calls using link-time interpositioning. -->
 
@@ -71,3 +72,6 @@ The following resources were used to guide the design and implementation of this
 - https://blog.cloudflare.com/pingora-open-source/
 - https://github.blog/news-insights/the-library/glb-part-2-haproxy-zero-downtime-zero-delay-reloads-with-multibinder/
 - https://github.com/contribsys/einhorn
+- https://github.com/envoyproxy/envoy
+- https://github.com/cloudflare/tableflip
+- https://github.com/cloudflare/shellflip
