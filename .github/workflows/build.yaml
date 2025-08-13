@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: bazel-contrib/setup-bazel@0.15.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: Build with Bazel (${{ matrix.arch }})
+        run: |
+          bazel build --config=${{ matrix.arch }} //src:continuity
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: continuity-${{ matrix.arch }}
+          path: bazel-bin/src/continuity
