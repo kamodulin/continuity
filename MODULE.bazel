@@ -1,0 +1,12 @@
+module(
+    name = "continuity",
+    version = "0.0.1",
+    repo_name = "com_github_kamodulin_continuity",
+)
+
+bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
+
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains("@zig_sdk//...")
