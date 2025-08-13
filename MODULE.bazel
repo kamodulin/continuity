@@ -4,9 +4,18 @@ module(
     repo_name = "com_github_kamodulin_continuity",
 )
 
+bazel_dep(name = "abseil-cpp", version = "20250512.1")
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
 bazel_dep(name = "hermetic_cc_toolchain", version = "3.1.0")
+bazel_dep(name = "rules_cc", version = "0.2.0")
 
 toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")
 
 register_toolchains("@zig_sdk//...")
+
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "abb61a688167623088f8768cc9264798df6a9d10",
+)
