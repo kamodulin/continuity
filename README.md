@@ -71,7 +71,7 @@ The following resources were used to guide the design and implementation of this
 - https://blog.cloudflare.com/graceful-upgrades-in-go
 - https://blog.cloudflare.com/pingora-open-source/
 - https://github.blog/news-insights/the-library/glb-part-2-haproxy-zero-downtime-zero-delay-reloads-with-multibinder/
-- https://github.com/contribsys/einhorn
-- https://github.com/envoyproxy/envoy
 - https://github.com/cloudflare/tableflip
 - https://github.com/cloudflare/shellflip
+- https://github.com/contribsys/einhorn
+- https://github.com/envoyproxy/envoy
