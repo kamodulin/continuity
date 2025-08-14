@@ -8,15 +8,6 @@ namespace continuity {
 
 namespace util {
 
-SocketPair::SocketPair(int domain, int type, int protocol) {
-  CheckSyscall("socketpair", socketpair(domain, type, protocol, fds_));
-}
-
-SocketPair::~SocketPair() {
-  close(fds_[0]);
-  close(fds_[1]);
-}
-
 UnixDomainSocket::UnixDomainSocket()
     : fd_(CheckSyscall("socket", socket(AF_UNIX, SOCK_STREAM, 0))) {}
 
@@ -66,6 +57,12 @@ ssize_t UnixDomainSocket::SendMsg(const struct msghdr* msg, int flags) {
 
 ssize_t UnixDomainSocket::RecvMsg(struct msghdr* msg, int flags) {
   return CheckSyscall("recvmsg", recvmsg(fd_, msg, flags));
+}
+
+std::pair<UnixDomainSocket, UnixDomainSocket> UnixDomainSocket::CreatePair() {
+  int fds[2];
+  CheckSyscall("socketpair", socketpair(AF_UNIX, SOCK_STREAM, 0, fds));
+  return std::make_pair(UnixDomainSocket(fds[0]), UnixDomainSocket(fds[1]));
 }
 
 }  // namespace util

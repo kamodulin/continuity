@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <sys/ptrace.h>
 #include <sys/socket.h>
+#include <sys/syscall.h>
+#include <csignal>
 #include <iostream>
 
 #include "absl/base/log_severity.h"
@@ -11,8 +13,9 @@
 #include "absl/log/initialize.h"
 #include "absl/log/log.h"
 
-#include "src/util/syscall.h"
+#include "src/tracee.h"
 #include "src/util/socket.h"
+#include "src/util/syscall.h"
 
 using namespace continuity;
 
@@ -37,7 +40,7 @@ int main(int argc, char* argv[]) {
   LOG(INFO) << "Using socket path: " << socket_path;
 
   // Create a socket pair for the parent and child to communicate.
-  util::SocketPair socket_pair;
+  auto [parent_socket, child_socket] = util::UnixDomainSocket::CreatePair();
 
   // Start the child process.
   pid_t pid = util::CheckSyscall("fork", fork());
@@ -45,6 +48,22 @@ int main(int argc, char* argv[]) {
     ptrace(PTRACE_TRACEME, 0, nullptr, nullptr);
     execvp(positional_args[1], &positional_args[1]);
   }
+
+  {
+    Tracee child(pid);
+
+    LOG(INFO) << "Child process started with pid: " << pid;
+    child.WaitForSyscall(SYS_bind, true);
+    LOG(INFO) << "Child entered the bind syscall";
+    child.WaitForSyscall(SYS_bind, false);
+    LOG(INFO) << "Child exited the bind syscall";
+
+    // Tracee detached when it falls out of scopre
+  }
+
+  kill(pid, SIGKILL);
+
+  // Run the parent logic.
 
   return EXIT_SUCCESS;
 }

@@ -1,8 +1,14 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
-cc_binary(
-    name = "continuity",
-    srcs = ["continuity.cc"],
+cc_library(
+    name = "continuity_lib",
+    srcs = [
+        "continuity.cc",
+        "tracee.cc",
+    ],
+    hdrs = [
+        "tracee.h",
+    ],
     deps = [
         "//src/util",
         "@abseil-cpp//absl/base:log_severity",
@@ -12,5 +18,12 @@ cc_binary(
         "@abseil-cpp//absl/log",
         "@abseil-cpp//absl/log:globals",
         "@abseil-cpp//absl/log:initialize",
+    ],
+)
+
+cc_binary(
+    name = "continuity",
+    deps = [
+        ":continuity_lib",
     ],
 )
